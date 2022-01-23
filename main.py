@@ -6,11 +6,16 @@ import services.user_service as user_service
 from auth import AuthHandler
 from models.content_model import get_content_list
 from models.user_model import get_user_by_id
+from pydantic_schema import WholeContentRecord
 
 app = FastAPI()
 
 auth_handler = AuthHandler()
 
+
+# Normally we would break these up with a router  system, but theres only 6
+
+# User routes
 
 @app.post('/register', status_code=201)
 def register(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -22,19 +27,15 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return user_service.login(form_data)
 
 
-@app.post('/user/{id}')
-def getuser(user_id):
-    user_info = get_user_by_id(user_id)
-    return user_info.username
 
-
+# Content Routes
 @app.get('/getcontent', dependencies=[Depends(auth_handler.auth_wrapper)])
 def getcontent(offset: int = 0, limit: int = Query(default=10, le=15)):
     content = get_content_list(offset, limit)
     return content
 
 
-@app.get('/getwholerecord/', dependencies=[Depends(auth_handler.auth_wrapper)])
+@app.get('/getwholerecord/', dependencies=[Depends(auth_handler.auth_wrapper)], response_model=WholeContentRecord)
 def getwholerecord(content_id):
     content = content_service.assemble_whole_record(content_id)
     return content

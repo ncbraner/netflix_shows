@@ -1,7 +1,7 @@
 from sqlmodel import Session, SQLModel, create_engine
-from config import Settings
+from config import settings
 
-engine = create_engine(Settings().mysql_url)
+engine = create_engine(settings.mysql_url)
 SQLModel.metadata.create_all(engine)
 
 
