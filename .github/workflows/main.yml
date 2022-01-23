@@ -20,18 +20,16 @@ jobs:
         uses: SpicyPizza/create-envfile@v1
         with:
           envkey_APP_ENV: PROD
-          envkey_API_DOMAIN: ${{ secrets.API_DOMAIN }}
           envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
           file_name: .env
       - name: Deploy to App Engine
-        - id: 'auth'
         uses: 'google-github-actions/auth@v0.4.0'
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-        - id: Deploy
-          uses: google-github-actions/deploy-appengine@v0.4.0
+      - name: Deploy
+        uses: google-github-actions/deploy-appengine@v0.4.0
 
       # Example of using the output
-      - id: test
+      - name: test
         run: curl "${{ steps.deploy.outputs.url }}"
