@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, Query
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse
 import services.content_service as content_service
 import services.user_service as user_service
 from auth import AuthHandler
@@ -16,10 +16,13 @@ auth_handler = AuthHandler()
 
 # Normally we would break these up with a router system, but there are only 7
 
-@app.get('/')
+@app.get('/', response_class=HTMLResponse)
 def my_route(request: Request) -> None:
     url = str(request.base_url)+'docs'
-    return RedirectResponse(url)
+    redirect = "<a href="+url+">this link to the docs page.</a>"
+    blurp = "To test the api, we can use the docs page. However some browsers may bock at going to the docs page from the free" \
+            " google cloud. <br> That is why there is not a auto redirect. <br>  You just need to continue through the warning. please follow "+redirect
+    return blurp
 
 
 
