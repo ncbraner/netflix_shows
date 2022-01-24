@@ -1,11 +1,12 @@
 from fastapi import FastAPI, Depends, Query
 from fastapi.security import OAuth2PasswordRequestForm
-
+from fastapi.responses import RedirectResponse
 import services.content_service as content_service
 import services.user_service as user_service
 from auth import AuthHandler
 from models.content_model import get_content_list
-from models.user_model import get_user_by_id
+from starlette.requests import Request
+
 from pydantic_schema import WholeContentRecord
 
 app = FastAPI()
@@ -13,7 +14,14 @@ app = FastAPI()
 auth_handler = AuthHandler()
 
 
-# Normally we would break these up with a router  system, but theres only 6
+# Normally we would break these up with a router system, but there are only 7
+
+@app.get('/')
+def my_route(request: Request) -> None:
+    url = str(request.base_url)+'docs'
+    return RedirectResponse(url)
+
+
 
 # User routes
 
